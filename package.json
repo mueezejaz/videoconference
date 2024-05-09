@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
   },
   "author": "",
   "license": "ISC",
@@ -12,5 +13,8 @@
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "3.2.5"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": "prettier --write"
   }
 }
