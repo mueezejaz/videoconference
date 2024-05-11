@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Switcher from "../components/Switcher";
+import Cardsforswitching from "../components/Cardsforswitching";
 
 const Home = () => {
   const [side, setside] = useState(true);
@@ -13,6 +14,10 @@ const Home = () => {
           setside={setside}
           side={side}
         />
+        <Cardsforswitching setside={setside} side={side}>
+          <h1>1</h1>
+          <h1>2</h1>
+        </Cardsforswitching>
       </div>
     </div>
   );
