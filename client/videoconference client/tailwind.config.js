@@ -7,6 +7,7 @@ export default {
       secondbg: "#1B1A55",
       thirdbg: "#535C91",
       fourthbg: "#9290C3",
+      text: "white",
     },
     extend: {},
   },
