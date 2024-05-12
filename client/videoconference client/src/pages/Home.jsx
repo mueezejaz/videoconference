@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Switcher from "../components/Switcher";
+import { Button } from "../components/ui/button.jsx";
 import Cardsforswitching from "../components/Cardsforswitching";
 
 const Home = () => {
@@ -15,10 +16,27 @@ const Home = () => {
           side={side}
         />
         <Cardsforswitching setside={setside} side={side}>
-          <h1>1</h1>
-          <h1>2</h1>
+          <JoinroomForm />
+          <Creatroom />
         </Cardsforswitching>
       </div>
+    </div>
+  );
+};
+
+const JoinroomForm = () => {
+  return (
+    <div>
+      <h1>Joinroom</h1>
+      <Button>Click me</Button>
+    </div>
+  );
+};
+
+const Creatroom = () => {
+  return (
+    <div>
+      <h1>Creatroom</h1>
     </div>
   );
 };
