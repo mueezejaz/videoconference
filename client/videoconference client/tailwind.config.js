@@ -15,6 +15,7 @@ module.exports = {
       secondbg: "#1B1A55",
       thirdbg: "#535C91",
       fourthbg: "#9290C3",
+      warning: "#ef4444",
     },
     container: {
       center: true,
