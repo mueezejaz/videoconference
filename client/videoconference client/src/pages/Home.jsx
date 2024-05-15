@@ -38,12 +38,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "../components/ui/input";
+import { Copybutten } from "@/components/Copybutten";
 
 const Home = () => {
   const [side, setside] = useState(true);
   return (
     <div className="bg-mainbg flex items-center justify-center w-screen h-screen">
-      <div className="bg-secondbg overflow-hidden w-[20rem] h-[25rem] rounded-md">
+      <div className="bg-secondbg overflow-hidden w-[20rem] h-[28rem] rounded-md">
         <Switcher
           sideone="Join Room"
           sidetwo="Create Room"
@@ -74,11 +75,18 @@ const JoinroomForm = () => {
         message: "Username must be at least 2 characters.",
       })
       .max(50),
+    roomid: z
+      .string()
+      .min(7, {
+        message: "Roomid must be at least 7 characters.",
+      })
+      .max(7),
   });
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      roomid: "",
     },
   });
   function onSubmit(values) {
@@ -90,23 +98,44 @@ const JoinroomForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="text-text mx-4 my-[40px] space-y-8"
+          className="text-text mx-4 my-[20px] space-y-8"
         >
           <FormField
             control={form.control}
             name="username"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input
-                    className="bg-fourthbg focus:outline-none tracking-wider caret-text font-medium text-text border-none placeholder:text-text"
-                    placeholder="name"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className="text-warning" />
-              </FormItem>
+              <>
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="bg-fourthbg focus:outline-none tracking-wider caret-text font-medium text-text border-none placeholder:text-text"
+                      placeholder="name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-warning" />
+                </FormItem>
+              </>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="roomid"
+            render={({ field }) => (
+              <>
+                <FormItem>
+                  <FormLabel>Room id</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="bg-fourthbg focus:outline-none tracking-wider caret-text font-medium text-text border-none placeholder:text-text"
+                      placeholder="Room id"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-warning" />
+                </FormItem>
+              </>
             )}
           />
           <div className="flex w-full items-center">
@@ -174,7 +203,8 @@ const JoinroomForm = () => {
 
 const Createroom = () => {
   const [open, setopen] = useState(false);
-  console.log(open);
+  const [copy, setcopy] = useState(false);
+  const inputRef = useRef(null);
   const [mediaPermissions, setmediaPermissions] = useState({
     mic: false,
     video: false,
@@ -186,11 +216,18 @@ const Createroom = () => {
         message: "Username must be at least 2 characters.",
       })
       .max(50),
+    Roomid: z
+      .string()
+      .min(7, {
+        message: "Roomid must be at least 7 characters.",
+      })
+      .max(7),
   });
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      Roomid: "1234567",
     },
   });
   function onSubmit(values) {
@@ -202,23 +239,55 @@ const Createroom = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="text-text mx-4 my-[40px] space-y-8"
+          className="text-text mx-4 my-[20px] space-y-8"
         >
           <FormField
             control={form.control}
             name="username"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input
-                    className="bg-fourthbg focus:outline-none tracking-wider caret-text font-medium text-text border-none placeholder:text-text"
-                    placeholder="name"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className="text-warning" />
-              </FormItem>
+              <>
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      className="bg-fourthbg focus:outline-none tracking-wider caret-text font-medium text-text border-none placeholder:text-text"
+                      placeholder="name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-warning" />
+                </FormItem>
+              </>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="Roomid"
+            render={({ field }) => (
+              <>
+                <FormItem>
+                  <FormLabel>Roomid</FormLabel>
+                  <div className="flex items-center">
+                    <FormControl>
+                      <Input
+                        readOnly
+                        className="bg-fourthbg focus:outline-none tracking-wider w-[95%] caret-text font-medium text-text border-none placeholder:text-text"
+                        {...field}
+                        ref={inputRef}
+                      />
+                    </FormControl>
+                    <Copybutten
+                      inputRef={inputRef}
+                      setcopy={setcopy}
+                      copy={copy}
+                    />
+                  </div>
+                  <FormDescription>
+                    Share this meeting id to invite others..
+                  </FormDescription>
+                  <FormMessage className="text-warning" />
+                </FormItem>
+              </>
             )}
           />
           <div className="flex w-full items-center">
@@ -288,20 +357,6 @@ function Dialogbox({ open, setopen }) {
   const [copy, setcopy] = useState(false);
   const inputRef = useRef(null);
   const { toast } = useToast();
-  const handleCopy = () => {
-    const inputText = inputRef.current.value;
-    const textarea = document.createElement("textarea");
-    textarea.value = inputText;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-    setcopy(true);
-    setTimeout(() => {
-      setcopy(false);
-    }, 2000);
-  };
-
   return (
     <>
       <Dialog open={open} onOpenChange={setopen}>
@@ -313,7 +368,7 @@ function Dialogbox({ open, setopen }) {
             </DialogDescription>
           </DialogHeader>
           <div className="flex items-center space-x-2">
-            <div className="grid flex-1 gap-2">
+            <div className="contents">
               <Label htmlFor="link" className="sr-only">
                 Link
               </Label>
@@ -324,25 +379,8 @@ function Dialogbox({ open, setopen }) {
                 defaultValue="https://ui.shadcn.com/docs/installation"
                 readOnly
               />
+              <Copybutten inputRef={inputRef} setcopy={setcopy} copy={copy} />
             </div>
-            <Button
-              type="button"
-              size="sm"
-              className="px-3 flex-col"
-              onClick={handleCopy}
-            >
-              {copy ? (
-                <>
-                  <IoIosCheckmarkCircle size="4x" className=" text-[#3bc23b]" />
-                  <span className="text-text">Copyed</span>
-                </>
-              ) : (
-                <>
-                  <IoCopy size="4x" />
-                  <span className="text-text">Copy</span>
-                </>
-              )}
-            </Button>
           </div>
           <DialogFooter className="sm:justify-start"></DialogFooter>
         </DialogContent>
