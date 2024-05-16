@@ -1,11 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Switcher from "../components/Switcher";
 import { Button } from "../components/ui/button.jsx";
 import Cardsforswitching from "../components/Cardsforswitching";
 // dialog
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-
+//uuid
+import useLocalhost from "@/Hooks/useLocalhost";
 import {
   Dialog,
   DialogClose,
@@ -39,8 +40,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "../components/ui/input";
 import { Copybutten } from "@/components/Copybutten";
+import { useLocation } from "react-router-dom";
 
 const Home = () => {
+  const id = useLocalhost("id");
   const [side, setside] = useState(true);
   return (
     <div className="bg-mainbg flex items-center justify-center w-screen h-screen">
@@ -53,7 +56,7 @@ const Home = () => {
         />
         <Cardsforswitching setside={setside} side={side}>
           <JoinroomForm />
-          <Createroom />
+          <Createroom roomid={id} />
         </Cardsforswitching>
       </div>
       <Toaster className="bg-warning" />
@@ -201,7 +204,7 @@ const JoinroomForm = () => {
   );
 };
 
-const Createroom = () => {
+const Createroom = ({ roomid }) => {
   const [open, setopen] = useState(false);
   const [copy, setcopy] = useState(false);
   const inputRef = useRef(null);
@@ -218,16 +221,16 @@ const Createroom = () => {
       .max(50),
     Roomid: z
       .string()
-      .min(7, {
-        message: "Roomid must be at least 7 characters.",
+      .min(8, {
+        message: "Roomid must be at least 8 characters.",
       })
-      .max(7),
+      .max(8),
   });
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
-      Roomid: "1234567",
+      Roomid: roomid,
     },
   });
   function onSubmit(values) {
@@ -235,7 +238,7 @@ const Createroom = () => {
   }
   return (
     <>
-      <Dialogbox open={open} setopen={setopen} />
+      <Dialogbox open={open} setopen={setopen} roomid={roomid} />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -353,7 +356,9 @@ const Createroom = () => {
   );
 };
 
-function Dialogbox({ open, setopen }) {
+function Dialogbox({ open, setopen, roomid }) {
+  const location = useLocation();
+  const fullURL = window.location.origin + location.pathname;
   const [copy, setcopy] = useState(false);
   const inputRef = useRef(null);
   const { toast } = useToast();
@@ -376,7 +381,7 @@ function Dialogbox({ open, setopen }) {
                 ref={inputRef}
                 className="bg-fourthbg"
                 id="link"
-                defaultValue="https://ui.shadcn.com/docs/installation"
+                defaultValue={fullURL + roomid}
                 readOnly
               />
               <Copybutten inputRef={inputRef} setcopy={setcopy} copy={copy} />
