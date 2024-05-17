@@ -15,7 +15,7 @@ const Copybutten = ({ inputRef, setcopy, copy, className }) => {
     setcopy(true);
     setTimeout(() => {
       setcopy(false);
-    }, 2000);
+    }, 1300);
   };
   return (
     <>

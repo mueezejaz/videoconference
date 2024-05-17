@@ -41,8 +41,9 @@ import {
 import { Input } from "../components/ui/input";
 import { Copybutten } from "@/components/Copybutten";
 import { useLocation } from "react-router-dom";
-
+import { useSocket } from "@/context/Socketconnectioncontext";
 const Home = () => {
+  console.log(useSocket());
   const id = useLocalhost("id");
   const [side, setside] = useState(true);
   return (
@@ -226,6 +227,7 @@ const Createroom = ({ roomid }) => {
       })
       .max(8),
   });
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
