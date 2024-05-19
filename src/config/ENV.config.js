@@ -8,7 +8,7 @@ const ENVvariable = {
   get(env) {
     let value = _ENVvariable[env];
     if (!value) {
-      console.log("valiable not found");
+      console.log(`valiable ${env} not found`);
       process.exit(1);
     }
   },
