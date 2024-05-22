@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Switcher from "../components/Switcher";
 import { Button } from "../components/ui/button.jsx";
 import Cardsforswitching from "../components/Cardsforswitching";
@@ -43,7 +43,18 @@ import { Copybutten } from "@/components/Copybutten";
 import { useLocation } from "react-router-dom";
 import { useSocket } from "@/context/Socketconnectioncontext";
 const Home = () => {
-  console.log(useSocket());
+  const socket = useSocket();
+  console.log(socket);
+  useEffect(() => {
+    if (!socket) return;
+    socket.emit("connected", { mueez: "ejaz" }, (err, response) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(response.status); // 'ok'
+      }
+    });
+  }, [socket]);
   const id = useLocalhost("id");
   const [side, setside] = useState(true);
   return (
@@ -67,7 +78,7 @@ const Home = () => {
 
 const JoinroomForm = () => {
   const [open, setopen] = useState(false);
-  console.log(open);
+  // console.log(open);
   const [mediaPermissions, setmediaPermissions] = useState({
     mic: false,
     video: false,
@@ -94,7 +105,7 @@ const JoinroomForm = () => {
     },
   });
   function onSubmit(values) {
-    console.log(values);
+    // console.log(values);
   }
   return (
     <>
@@ -236,7 +247,7 @@ const Createroom = ({ roomid }) => {
     },
   });
   function onSubmit(values) {
-    console.log(values);
+    // console.log(values);
   }
   return (
     <>

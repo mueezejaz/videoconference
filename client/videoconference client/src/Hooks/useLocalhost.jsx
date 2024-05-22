@@ -5,7 +5,7 @@ const useLocalhost = (prefix) => {
   const prefixvalue = preprefix + prefix;
   function getandsetvaluetolocalstorage() {
     let localstoragevalue = localStorage.getItem(prefixvalue);
-    console.log(localstoragevalue);
+    // console.log(localstoragevalue);
     if (localstoragevalue != null || localstoragevalue != undefined) {
       localstoragevalue = JSON.parse(localstoragevalue);
     } else {
