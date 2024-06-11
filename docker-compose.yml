@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  mediasoup:
+    build: .
+    container_name: mediasoup_service
+    ports:
+      - "3000:3000" # Exposing mediasoup WebRTC TCP ports
+    environment:
+      - NODE_ENV=production
+      # Add any other environment variables your application needs here
+    volumes:
+      - .:/service
+    restart: unless-stopped
