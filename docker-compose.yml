@@ -5,10 +5,16 @@ services:
     build: .
     container_name: mediasoup_service
     ports:
-      - "3000:3000" # Exposing mediasoup WebRTC TCP ports
+      - "3000:3000"
+      - "40000-40099:40000-40099/udp"  # Expose 100 UDP ports from 40000 to 40099
+      - "40000-40099:40000-40099/tcp"  # Expose 100 TCP ports from 40000 to 40099
     environment:
       - NODE_ENV=production
-      # Add any other environment variables your application needs here
     volumes:
       - .:/service
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1g

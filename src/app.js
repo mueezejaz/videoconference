@@ -23,7 +23,6 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-console.log(ENVvariable.get("CORS_ORIGEN"));
 IntializingSocket(io);
 app.get("/", (req, res) => {
   res.send("hello world");

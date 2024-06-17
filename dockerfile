@@ -11,4 +11,8 @@ COPY package-lock.json .
 COPY . .
 RUN rm -rf node_modules
 RUN npm install
+EXPOSE 3000
+# Expose additional ports for mediasoup (example ports, adjust as necessary)
+EXPOSE 40000-49999/udp
+EXPOSE 40000-49999/tcp
 CMD ["npm", "run", "dev"]
