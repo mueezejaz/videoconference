@@ -1,12 +1,9 @@
 import * as mediasoup from "mediasoup";
 import { mediasoupConfig } from "../config/mediasoup/mediasoup.config.js";
-import { routerManager } from "./router.manager.js";
 import ENVvariable from "../config/ENV.config.js";
 import { execSync } from "child_process";
 import os from "os";
 import fs from "fs";
-
-let routers;
 
 class WorkerManager {
   constructor() {
@@ -40,9 +37,6 @@ class WorkerManager {
       }
       await this.updateCpuResourceUsage();
       console.log(`Created ${numWorkers} Mediasoup workers.`);
-      /// creating router
-      routers = new routerManager();
-      routers.makingRouter();
     } catch (error) {
       console.error("Error creating workers:", error);
     }

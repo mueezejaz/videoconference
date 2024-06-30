@@ -55,5 +55,16 @@ const mediasoupConfig = Object.freeze({
       ],
     },
   ],
+  webRtcTransportOptions: {
+    listenIps: [
+      {
+        ip: "0.0.0.0", // replace with relevant IP address
+        announcedIp: "127.0.0.1",
+      },
+    ],
+    enableUdp: true,
+    enableTcp: true,
+    preferUdp: true,
+  },
 });
 export { mediasoupConfig };

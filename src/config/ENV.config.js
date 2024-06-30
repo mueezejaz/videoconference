@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 const _ENVvariable = {
-  CORS_ORIGEN: process.env.CORS_ORIGEN,
+  CORS_ORIGEN: "http://127.0.0.1:5173",
   ENV: process.env.ENV,
 };
 const ENVvariable = {

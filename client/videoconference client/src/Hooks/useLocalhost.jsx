@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-const useLocalhost = (prefix) => {
-  const preprefix = "videoconference";
-  const prefixvalue = preprefix + prefix;
-  function getandsetvaluetolocalstorage() {
-    let localstoragevalue = localStorage.getItem(prefixvalue);
-    // console.log(localstoragevalue);
-    if (localstoragevalue != null || localstoragevalue != undefined) {
-      localstoragevalue = JSON.parse(localstoragevalue);
+const useLocalhost = (prefix, initialValue) => {
+  const preprefix = "videoConference";
+  const pefixValuee = preprefix + prefix;
+  const [value, setValue] = useState(() => {
+    let localStoredValue = localStorage.getItem(pefixValuee);
+    if (localStoredValue != null || localStoredValue != undefined) {
+      console.log(JSON.parse(localStoredValue));
+      return JSON.parse(localStoredValue);
     } else {
-      const uuid = uuidv4();
-      localstoragevalue = uuid.substring(0, 8);
-      localstoragevalue = localstoragevalue.replace(/(.{4})/g, "$1-");
-      localstoragevalue = localstoragevalue.slice(0, -1); // remove the last dash
-      localStorage.setItem(prefixvalue, JSON.stringify(localstoragevalue));
+      if (typeof initialValue === "function") {
+        return initialValue();
+      } else {
+        return initialValue;
+      }
     }
-    return localstoragevalue;
-  }
-  let value = getandsetvaluetolocalstorage();
-  return value;
+  });
+  useEffect(() => {
+    localStorage.setItem(pefixValuee, JSON.stringify(value));
+  }, [value]);
+  return [value, setValue];
 };
 
 export default useLocalhost;

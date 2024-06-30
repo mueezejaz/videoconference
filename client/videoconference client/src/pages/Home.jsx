@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { useNavigate } from "react-router-dom";
 // form imports
 import { IoIosCheckmarkCircle } from "react-icons/io";
 import { IoCopy } from "react-icons/io5";
@@ -29,6 +30,7 @@ import { IoIosMic } from "react-icons/io";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { v4 as uuidv4 } from "uuid";
 import {
   Form,
   FormControl,
@@ -42,20 +44,18 @@ import { Input } from "../components/ui/input";
 import { Copybutten } from "@/components/Copybutten";
 import { useLocation } from "react-router-dom";
 import { useSocket } from "@/context/Socketconnectioncontext";
+import { SocketEvents } from "@/socket/socket.events";
+import { settingUpDevice } from "@/lib/mediasoup.eventns";
 const Home = () => {
-  const socket = useSocket();
-  console.log(socket);
-  useEffect(() => {
-    if (!socket) return;
-    socket.emit("connected", { mueez: "ejaz" }, (err, response) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(response.status); // 'ok'
-      }
-    });
-  }, [socket]);
-  const id = useLocalhost("id");
+  function roomIdGenrater() {
+    const uuid = uuidv4()
+      .substring(0, 8)
+      .replace(/(.{4})/g, "$1-")
+      .slice(0, -1);
+    return uuid;
+  }
+  const [roomid, setroomid] = useLocalhost("roomid", roomIdGenrater());
+  const [userid, setuserid] = useLocalhost("userid", roomIdGenrater());
   const [side, setside] = useState(true);
   return (
     <div className="bg-mainbg flex items-center justify-center w-screen h-screen">
@@ -68,7 +68,7 @@ const Home = () => {
         />
         <Cardsforswitching setside={setside} side={side}>
           <JoinroomForm />
-          <Createroom roomid={id} />
+          <Createroom roomid={roomid} />
         </Cardsforswitching>
       </div>
       <Toaster className="bg-warning" />
@@ -218,8 +218,11 @@ const JoinroomForm = () => {
 
 const Createroom = ({ roomid }) => {
   const [open, setopen] = useState(false);
+  const socket = useSocket();
+  const [userid, setuserid] = useLocalhost("userid");
   const [copy, setcopy] = useState(false);
   const inputRef = useRef(null);
+  let navigate = useNavigate();
   const [mediaPermissions, setmediaPermissions] = useState({
     mic: false,
     video: false,
@@ -233,10 +236,10 @@ const Createroom = ({ roomid }) => {
       .max(50),
     Roomid: z
       .string()
-      .min(8, {
+      .min(9, {
         message: "Roomid must be at least 8 characters.",
       })
-      .max(8),
+      .max(9),
   });
 
   const form = useForm({
@@ -247,7 +250,25 @@ const Createroom = ({ roomid }) => {
     },
   });
   function onSubmit(values) {
-    // console.log(values);
+    values.userid = userid;
+    socket
+      .timeout(5000)
+      .emit(
+        `${SocketEvents.CreatRoom_EVENT}`,
+        { ...values },
+        async (err, response) => {
+          console.log(response);
+          let isDeviceCreated = await settingUpDevice(
+            response.routerRtpCapablity,
+          );
+          console.log(isDeviceCreated);
+          if (isDeviceCreated) {
+            navigate(`/Room/${values.Roomid}`);
+          } else {
+            console.log("Faild to creat room");
+          }
+        },
+      );
   }
   return (
     <>
