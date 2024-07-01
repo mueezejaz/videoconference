@@ -3,6 +3,8 @@ import { useSocket } from "@/context/Socketconnectioncontext";
 import { SocketEvents } from "@/socket/socket.events";
 import useLocalhost from "@/Hooks/useLocalhost";
 let device;
+let sentTransport;
+let recvTransport = new Map();
 async function settingUpDevice(routerRtpCapabilities) {
   try {
     device = new mediasoup.Device();
@@ -21,8 +23,6 @@ async function settingUpDevice(routerRtpCapabilities) {
 }
 function creatingSendtransport() {
   try {
-    const [userid, setuserid] = useLocalhost("userid");
-    const socket = useSocket();
     socket
       .timeout(5000)
       .emmit(

@@ -25,7 +25,20 @@ class routerManager {
     console.log(router);
     return router.router;
   }
+  async getRouterRtpCapablity(routerId, roomStatus) {
+    if (roomStatus === "creating") {
+      let router = await this.makingRouter();
+      return { ...router };
+    } else {
+      let router = this.getRouterWithId(routerId);
+      return {
+        routerId: router.id,
+        routerRtpCapablity: router.rtpCapabilities,
+      };
+    }
+  }
 }
+
 let routers = new routerManager();
 
 export { routers };

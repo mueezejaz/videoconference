@@ -31,6 +31,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { v4 as uuidv4 } from "uuid";
+import { gettingRouterRtpCapability } from "@/socket/socket.index";
 import {
   Form,
   FormControl,
@@ -251,24 +252,26 @@ const Createroom = ({ roomid }) => {
   });
   function onSubmit(values) {
     values.userid = userid;
-    socket
-      .timeout(5000)
-      .emit(
-        `${SocketEvents.CreatRoom_EVENT}`,
-        { ...values },
-        async (err, response) => {
-          console.log(response);
-          let isDeviceCreated = await settingUpDevice(
-            response.routerRtpCapablity,
-          );
-          console.log(isDeviceCreated);
-          if (isDeviceCreated) {
-            navigate(`/Room/${values.Roomid}`);
-          } else {
-            console.log("Faild to creat room");
-          }
-        },
-      );
+    values.roomStatus = "creating";
+    gettingRouterRtpCapability(socket, values);
+    // socket
+    //   .timeout(5000)
+    //   .emit(
+    //     `${SocketEvents.CreatRoom_EVENT}`,
+    //     { ...values },
+    //     async (err, response) => {
+    //       console.log(response);
+    //       let isDeviceCreated = await settingUpDevice(
+    //         response.routerRtpCapablity,
+    //       );
+    //       console.log(isDeviceCreated);
+    //       if (isDeviceCreated) {
+    //         navigate(`/Room/${values.Roomid}`);
+    //       } else {
+    //         console.log("Faild to creat room");
+    //       }
+    //     },
+    //   );
   }
   return (
     <>

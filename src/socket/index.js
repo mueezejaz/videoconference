@@ -7,7 +7,8 @@ import { transports } from "../libs/transports.manager.js";
 const JoiningEvent = (socket) => {
   socket.on(SocketEvents.CreatRoom_EVENT, async (data, callback) => {
     try {
-      let { routerId, routerRtpCapablity } = await routers.makingRouter();
+      let routerData;
+      console.log(data);
       let existedUser = users.finduserById(data.userid);
       if (existedUser) {
         console.log("user already existed");
@@ -17,25 +18,28 @@ const JoiningEvent = (socket) => {
         // })
         // return
       }
+      // if(data.roomStatus === "creating"){
+      routerData = await routers.getRouterRtpCapablity(null, data.roomStatus);
+      console.log("router data ", routerData);
+      // }
       users.creatNewUser(
         data.username,
         data.userid,
         socket.id,
         data.Roomid,
-        routerId,
+        routerData.routerId,
         true,
       );
       console.log(users);
-      rooms.createRoom(data.Roomid, socket.id, routerId);
-      console.log(rooms);
+      rooms.createRoom(data.Roomid, routerData.routerId);
+      rooms.addNewUserToRoom(data.Roomid, data.userid);
       callback({
         success: true,
         message: "Room created successfully",
-        routerRtpCapablity,
+        routerRtpCapablity: routerData.routerRtpCapablity,
       });
     } catch (error) {
       console.log(error);
-      // Send the error back through the callback
       callback({
         success: false,
         message: "Failed to create room",
